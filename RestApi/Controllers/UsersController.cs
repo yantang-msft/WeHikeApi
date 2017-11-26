@@ -55,6 +55,7 @@ namespace RestApi.Controllers
 
                         cmd.ExecuteNonQuery();
 
+                        result.success = true;
                         result.message = $"User {userName} created";
                         return Utilities.CreateJsonReponse(Request, result);
                     }
