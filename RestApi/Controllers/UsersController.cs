@@ -19,7 +19,7 @@ namespace RestApi.Controllers
 
         [HttpPost]
         [ActionName("create")]
-        public HttpResponseMessage CreateUser(string userName, string password)
+        public HttpResponseMessage CreateUser(string userName, string password, string email)
         {
             CreateUserResult result = new CreateUserResult();
             try
@@ -29,7 +29,7 @@ namespace RestApi.Controllers
                     connection.Open();
 
                     // Check if user name already exist
-                    string checkExistenceQuery = "SELECT [UserName], [Password], [AuthToken] FROM dbo.users WHERE [UserName] = @userName";
+                    string checkExistenceQuery = "SELECT * FROM dbo.users WHERE [UserName] = @userName";
                     using (SqlCommand cmd = new SqlCommand(checkExistenceQuery, connection))
                     {
                         cmd.Parameters.Add("@userName", SqlDbType.VarChar, 255).Value = userName;
@@ -44,12 +44,13 @@ namespace RestApi.Controllers
                     }
 
                     // Create new user
-                    string createNewUserQuery = "INSERT INTO dbo.users ([UserName], [Password], [AuthToken]) VALUES (@userName, @password, @authToken)";
+                    string createNewUserQuery = "INSERT INTO dbo.users ([UserName], [Password], [Email], [AuthToken]) VALUES (@userName, @password, @email, @authToken)";
                     using (SqlCommand cmd = new SqlCommand(createNewUserQuery, connection))
                     {
                         string authToken = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
                         cmd.Parameters.Add("@userName", SqlDbType.VarChar, 255).Value = userName;
                         cmd.Parameters.Add("@password", SqlDbType.VarChar, 255).Value = password;
+                        cmd.Parameters.Add("@email", SqlDbType.VarChar, 255).Value = email;
                         cmd.Parameters.Add("@authToken", SqlDbType.VarChar, 255).Value = authToken;
 
                         cmd.ExecuteNonQuery();
