@@ -11,7 +11,6 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
-using System.Linq;
 
 namespace RestApi.Controllers
 {
@@ -20,7 +19,7 @@ namespace RestApi.Controllers
 
         [HttpPost]
         [ActionName("create")]
-        public string CreateUser(string userName, string password)
+        public HttpResponseMessage CreateUser(string userName, string password)
         {
             CreateUserResult result = new CreateUserResult();
             try
@@ -39,7 +38,7 @@ namespace RestApi.Controllers
                             if (reader.Read())
                             {
                                 result.message = $"User name {userName} already exist!";
-                                return new JavaScriptSerializer().Serialize(result);
+                                return Utilities.CreateJsonReponse(Request, result);
                             }
                         }
                     }
@@ -56,20 +55,20 @@ namespace RestApi.Controllers
                         cmd.ExecuteNonQuery();
 
                         result.message = $"User {userName} created";
-                        return new JavaScriptSerializer().Serialize(result);
+                        return Utilities.CreateJsonReponse(Request, result);
                     }
                 }
             }
             catch (Exception e)
             {
                 result.message = $"Failed to create new user: {e.Message}";
-                return new JavaScriptSerializer().Serialize(result);
+                return Utilities.CreateJsonReponse(Request, result);
             }
         }
 
         [HttpGet]
         [ActionName("login")]
-        public string LoginByPwd(string userName, string password)
+        public HttpResponseMessage LoginByPwd(string userName, string password)
         {
             LoginByPwdResult result = new LoginByPwdResult();
             try
@@ -90,25 +89,26 @@ namespace RestApi.Controllers
                                 result.success = true;
                                 result.message = $"Login succeeded";
                                 result.authToken = reader.GetString(0);
-                                return new JavaScriptSerializer().Serialize(result);
+
+                                return Utilities.CreateJsonReponse(Request, result);
                             }
                         }
                     }
 
                     result.message = $"User name or password is incorrect";
-                    return new JavaScriptSerializer().Serialize(result);
+                    return Utilities.CreateJsonReponse(Request, result);
                 }
             }
             catch (Exception e)
             {
                 result.message = $"Login failed: {e.Message}";
-                return new JavaScriptSerializer().Serialize(result);
+                return Utilities.CreateJsonReponse(Request, result);
             }
         }
 
         [HttpGet]
         [ActionName("verify")]
-        public string VerifyAuthorizationToken()
+        public HttpResponseMessage VerifyAuthorizationToken()
         {
             VerifyLoginByTokenResult result = new VerifyLoginByTokenResult();
             try
@@ -133,12 +133,12 @@ namespace RestApi.Controllers
                                 if (reader.Read())
                                 {
                                     result.success = true;
-                                    return new JavaScriptSerializer().Serialize(result);
+                                    return Utilities.CreateJsonReponse(Request, result);
                                 }
                                 else
                                 {
                                     result.message = $"AuthorizationHeader is not set";
-                                    return new JavaScriptSerializer().Serialize(result);
+                                    return Utilities.CreateJsonReponse(Request, result);
                                 }
                             }
                         }
@@ -147,13 +147,13 @@ namespace RestApi.Controllers
                 else
                 {
                     result.message = $"AuthorizationHeader is not set";
-                    return new JavaScriptSerializer().Serialize(result);
+                    return Utilities.CreateJsonReponse(Request, result);
                 }
             }
             catch (Exception e)
             {
                 result.message = $"Verify login failed: {e.Message}";
-                return new JavaScriptSerializer().Serialize(result);
+                return Utilities.CreateJsonReponse(Request, result);
             }
         }
     }
