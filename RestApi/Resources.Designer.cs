@@ -59,23 +59,5 @@ namespace RestApi {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to AutorizationHeader.
-        /// </summary>
-        public static string AuthorizationHeader {
-            get {
-                return ResourceManager.GetString("AuthorizationHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Server=tcp:wehike.database.windows.net,1433;Initial Catalog=WeHike;Persist Security Info=False;User ID=wehike;Password=#Bugsfor$;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;.
-        /// </summary>
-        public static string connectionStr {
-            get {
-                return ResourceManager.GetString("connectionStr", resourceCulture);
-            }
-        }
     }
 }

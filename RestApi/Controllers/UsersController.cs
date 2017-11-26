@@ -24,7 +24,7 @@ namespace RestApi.Controllers
             CreateUserResult result = new CreateUserResult();
             try
             {
-                using (SqlConnection connection = new SqlConnection(Resources.connectionStr))
+                using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
                 {
                     connection.Open();
 
@@ -75,7 +75,7 @@ namespace RestApi.Controllers
             LoginByPwdResult result = new LoginByPwdResult();
             try
             {
-                using (SqlConnection connection = new SqlConnection(Resources.connectionStr))
+                using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
                 {
                     connection.Open();
 
@@ -117,13 +117,13 @@ namespace RestApi.Controllers
             {
 
                 IEnumerable<string> authHeaders;
-                if (Request.Headers.TryGetValues(Resources.AuthorizationHeader, out authHeaders)
+                if (Request.Headers.TryGetValues(Constants.AuthorizationHeader, out authHeaders)
                     && authHeaders.Count() == 1)
                 {
                     var authToken = authHeaders.ElementAt(0);
 
                     // TODO: only check token or token plus user name?
-                    using (SqlConnection connection = new SqlConnection(Resources.connectionStr))
+                    using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
                     {
                         connection.Open();
                         string verifyTokenQuery = "SELECT* FROM dbo.users WHERE [AuthToken] = @authToken";

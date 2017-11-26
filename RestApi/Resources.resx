@@ -117,10 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AuthorizationHeader" xml:space="preserve">
-    <value>AutorizationHeader</value>
-  </data>
-  <data name="connectionStr" xml:space="preserve">
-    <value>Server=tcp:wehike.database.windows.net,1433;Initial Catalog=WeHike;Persist Security Info=False;User ID=wehike;Password=#Bugsfor$;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</value>
-  </data>
 </root>
