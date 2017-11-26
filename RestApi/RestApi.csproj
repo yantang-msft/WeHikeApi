@@ -211,6 +211,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
