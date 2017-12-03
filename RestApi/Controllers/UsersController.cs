@@ -126,7 +126,7 @@ namespace RestApi.Controllers
                     using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
                     {
                         connection.Open();
-                        string verifyTokenQuery = "SELECT* FROM dbo.users WHERE [AuthToken] = @authToken";
+                        string verifyTokenQuery = "SELECT * FROM dbo.users WHERE [AuthToken] = @authToken";
                         using (SqlCommand cmd = new SqlCommand(verifyTokenQuery, connection))
                         {
                             cmd.Parameters.Add("@authToken", SqlDbType.VarChar, 255).Value = authToken;

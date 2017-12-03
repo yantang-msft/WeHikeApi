@@ -25,6 +25,12 @@ namespace RestApi
                 routeTemplate: "users/{action}",
                 defaults: new { controller = "users" }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "PostApi",
+                routeTemplate: "posts/{action}",
+                defaults: new { controller = "posts" }
+            );
         }
     }
 }
