@@ -31,6 +31,12 @@ namespace RestApi
                 routeTemplate: "posts/{action}",
                 defaults: new { controller = "posts" }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "PostCommentApi",
+                routeTemplate: "post/comments/{action}",
+                defaults: new { controller = "postComments" }
+            );
         }
     }
 }

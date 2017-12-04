@@ -24,10 +24,18 @@ namespace RestApi.DataContract
         public long timestamp;
     }
 
-    public class GetPostResult
+    public class ListPostResult
     {
         public bool success;
         public string message;
         public PostInfo[] posts;
+    }
+
+    public class GetPostResult
+    {
+        public bool success;
+        public string message;
+        public PostInfo postInfo;
+        public PostCommentInfo[] comments;
     }
 }

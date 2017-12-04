@@ -201,9 +201,11 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PostCommentsController.cs" />
     <Compile Include="Controllers\PostsController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DataContract\PostCommentsDataContract.cs" />
     <Compile Include="DataContract\PostsDataContract.cs" />
     <Compile Include="DataContract\UsersDataContract.cs" />
     <Compile Include="Global.asax.cs">

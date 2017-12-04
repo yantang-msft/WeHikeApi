@@ -38,7 +38,7 @@ namespace RestApi.Controllers
                     using (SqlCommand cmd = new SqlCommand(createPostQuery, connection))
                     {
                         cmd.Parameters.Add("@userName", SqlDbType.VarChar, 255).Value = userName;
-                        cmd.Parameters.Add("@imageUrl", SqlDbType.VarChar, 255).Value = imageUrl;
+                        cmd.Parameters.Add("@imageUrl", SqlDbType.VarChar, 1024).Value = imageUrl;
                         cmd.Parameters.Add("@description", SqlDbType.VarChar, 255).Value = description;
                         cmd.Parameters.Add("@longitude", SqlDbType.VarChar, 255).Value = longitude;
                         cmd.Parameters.Add("@latitude", SqlDbType.VarChar, 255).Value = latitude;
@@ -67,7 +67,7 @@ namespace RestApi.Controllers
         [ActionName("list")]
         public HttpResponseMessage ListPost(int top = 50)
         {
-            GetPostResult result = new GetPostResult();
+            ListPostResult result = new ListPostResult();
             List<PostInfo> posts = new List<PostInfo>();
             try
             {
@@ -104,6 +104,86 @@ namespace RestApi.Controllers
                     result.success = true;
                     result.message = $"List post succeeded";
                     result.posts = posts.ToArray();
+                    return Utilities.CreateJsonReponse(Request, result);
+                }
+            }
+            catch (Exception e)
+            {
+                result.message = $"Failed to list posts: {e.Message}";
+                return Utilities.CreateJsonReponse(Request, result);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("get")]
+        public HttpResponseMessage GetPost(int postId, Boolean includeComment = true) {
+            GetPostResult result = new GetPostResult();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
+                {
+                    connection.Open();
+                    string getQuery = "SELECT p.*, u.PhotoUrl FROM posts AS p " +
+                                        "LEFT JOIN users AS u " +
+                                        "ON p.UserName = u.userName " +
+                                        "WHERE p.PostId = (@postId)";
+                                        
+                    using (SqlCommand cmd = new SqlCommand(getQuery, connection))
+                    {
+                        cmd.Parameters.Add("@postId", SqlDbType.Int).Value = postId;
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var post = new PostInfo()
+                                {
+                                    postId = reader.GetInt32(0),
+                                    userName = reader.IsDBNull(1) ? null : reader.GetString(1),
+                                    imageUrl = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                    description = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                    longitude = reader.GetSqlSingle(4).Value,
+                                    latitude = reader.GetSqlSingle(5).Value,
+                                    timestamp = (long)reader.GetDateTime(6).Subtract(StartTime).TotalMilliseconds,
+                                    userPhotoUrl = reader.IsDBNull(7) ? null : reader.GetString(7)
+                                };
+                                result.postInfo = post;
+                            }
+                            else
+                            {
+                                result.message = $"Post with id {postId} not found!";
+                                return Utilities.CreateJsonReponse(Request, result);
+                            }
+                        }
+                    }
+
+                    if (includeComment)
+                    {
+                        List<PostCommentInfo> comments = new List<PostCommentInfo>();
+                        string query = "SELECT * FROM post_comments where PostId = (@postId) ORDER BY Timestamp asc";
+                        using (SqlCommand cmd = new SqlCommand(query, connection))
+                        {
+                            cmd.Parameters.Add("@postId", SqlDbType.Int).Value = postId;
+                            using (SqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    var comment = new PostCommentInfo()
+                                    {
+                                        commentId = reader.GetInt32(0),
+                                        // index 1 is postId
+                                        userName = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                        content = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                        timestamp = (long)reader.GetDateTime(4).Subtract(StartTime).TotalMilliseconds,
+                                    };
+                                    comments.Add(comment);
+                                }
+                            }
+                        }
+                        result.comments = comments.ToArray();
+                    }
+
+                    result.success = true;
+                    result.message = $"Get post succeeded";
                     return Utilities.CreateJsonReponse(Request, result);
                 }
             }
