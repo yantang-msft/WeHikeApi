@@ -16,6 +16,7 @@ namespace RestApi.Controllers
 {
     public class PostsController : ApiController
     {
+        private static readonly DateTime StartTime = new DateTime(1970, 1, 1, 0, 0, 0);
 
         [HttpPost]
         [ActionName("create")]
@@ -73,9 +74,11 @@ namespace RestApi.Controllers
                 using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
                 {
                     connection.Open();
-
-                    string loginQuery = "select top (@limit) * from posts order by Timestamp desc";
-                    using (SqlCommand cmd = new SqlCommand(loginQuery, connection))
+                    string listQuery = "SELECT TOP (@limit) p.*, u.PhotoUrl FROM posts AS p " +
+                        "LEFT JOIN users AS u " +
+                        "ON p.UserName = u.userName " +
+                        "ORDER BY Timestamp desc";
+                    using (SqlCommand cmd = new SqlCommand(listQuery, connection))
                     {
                         cmd.Parameters.Add("@limit", SqlDbType.Int).Value = top;
                         using (SqlDataReader reader = cmd.ExecuteReader())
@@ -90,7 +93,8 @@ namespace RestApi.Controllers
                                     description = reader.IsDBNull(3) ? null : reader.GetString(3),
                                     longitude = reader.GetSqlSingle(4).Value,
                                     latitude = reader.GetSqlSingle(5).Value,
-                                    timestamp = reader.GetDateTime(6)
+                                    timestamp = (long)reader.GetDateTime(6).Subtract(StartTime).TotalMilliseconds,
+                                    userPhotoUrl = reader.IsDBNull(7) ? null : reader.GetString(7)
                                 };
                                 posts.Add(post);
                             }

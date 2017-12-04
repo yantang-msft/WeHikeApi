@@ -6,5 +6,9 @@ CREATE TABLE users (
 	UserName varchar(255),
 	Password varchar(255),
 	Email varchar(255),
-	AuthToken varchar(255)
+	AuthToken varchar(255),
+	PhotoUrl varchar(1024),
+	PhoneNumber varchar(32),
+	FacebookUrl varchar(1024),
+	TwitterUrl varchar(1024)
 );

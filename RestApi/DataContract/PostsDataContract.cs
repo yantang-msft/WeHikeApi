@@ -16,11 +16,12 @@ namespace RestApi.DataContract
     {
         public int postId;
         public string userName;
+        public string userPhotoUrl;
         public string imageUrl;
         public string description;
         public double longitude;
         public double latitude;
-        public DateTime timestamp;
+        public long timestamp;
     }
 
     public class GetPostResult
