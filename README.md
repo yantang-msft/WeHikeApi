@@ -1,3 +1,1 @@
-Sql Server account:
-UserName: wehike
-Password: #Bugsfor$
+This is the backend implementation of the android app WeHike
