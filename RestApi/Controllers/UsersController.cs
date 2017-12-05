@@ -272,12 +272,12 @@ namespace RestApi.Controllers
                             {
                                 var profile = new UserProfile()
                                 {
-                                    userName = reader.IsDBNull(0) ? null : reader.GetString(0),
-                                    email = reader.IsDBNull(1) ? null : reader.GetString(1),
-                                    photoUrl = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                    phoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
-                                    facebookUrl = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                    twitterUrl = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                    userName = reader.IsDBNull(0) ? "" : reader.GetString(0),
+                                    email = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                                    photoUrl = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                    phoneNumber = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                                    facebookUrl = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                                    twitterUrl = reader.IsDBNull(5) ? "" : reader.GetString(5),
                                 };
                                 return Utilities.CreateJsonReponse(Request, profile);
                             }
