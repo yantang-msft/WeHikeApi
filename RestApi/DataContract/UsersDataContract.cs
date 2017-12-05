@@ -23,4 +23,14 @@ namespace RestApi.DataContract
         public bool success;
         public string message;
     }
+
+    public class UserProfile
+    {
+        public string userName;
+        public string email;
+        public string photoUrl;
+        public string phoneNumber;
+        public string facebookUrl;
+        public string twitterUrl;
+    }
 }

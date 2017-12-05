@@ -158,5 +158,119 @@ namespace RestApi.Controllers
                 return Utilities.CreateJsonReponse(Request, result);
             }
         }
+
+        [HttpPut]
+        [ActionName("update")]
+        public HttpResponseMessage UpdateUserProfile(string userName, string password = null, string email = null, string photoUrl = null, string phoneNumber = null, string facebookUrl = null, string twitterUrl = null)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
+                {
+                    connection.Open();
+
+                    // If everything is null, report error
+                    if (password == null && email == null && photoUrl == null && phoneNumber == null && facebookUrl == null && twitterUrl == null)
+                    {
+                        return Utilities.CreateBadRequestResponse(Request, $"Nothing to update");
+                    }
+
+                    // TODO: need to authenticate user
+                    string query = "UPDATE dbo.users " +
+                        "SET " +
+                        (password != null ? "Password=(@password) " : "") +
+                        (email != null ? "Email=(@email) " : "") +
+                        (photoUrl != null ? "PhotoUrl=(@photoUrl) " : "") +
+                        (phoneNumber != null ? "PhoneNumber=(@phoneNumber) " : "") +
+                        (facebookUrl != null ? "FacebookUrl=(@facebookUrl) " : "") +
+                        (twitterUrl != null ? "TwitterUrl=(@twitterUrl) " : "") +
+                        "WHERE UserName = (@userName)";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.Add("@userName", SqlDbType.VarChar, 255).Value = userName;
+                        if (password != null)
+                        {
+                            cmd.Parameters.Add("@password", SqlDbType.VarChar, 255).Value = password;
+                        }
+                        if (email != null)
+                        {
+                            cmd.Parameters.Add("@email", SqlDbType.VarChar, 255).Value = email;
+                        }
+                        if (photoUrl != null)
+                        {
+                            cmd.Parameters.Add("@photoUrl", SqlDbType.VarChar, 1024).Value = photoUrl;
+                        }
+                        if (phoneNumber != null)
+                        {
+                            cmd.Parameters.Add("phoneNumber", SqlDbType.VarChar, 255).Value = phoneNumber;
+                        }
+                        if (facebookUrl != null)
+                        {
+                            cmd.Parameters.Add("@facebookUrl", SqlDbType.VarChar, 1024).Value = facebookUrl;
+                        }
+                        if (twitterUrl != null)
+                        {
+                            cmd.Parameters.Add("@twitterUrl", SqlDbType.VarChar, 1024).Value = twitterUrl;
+                        }
+
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            return Utilities.CreateBadRequestResponse(Request, $"User {userName} not found!");
+                        }
+                        else
+                        {
+                            return Utilities.CreateOKResponse(Request);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Utilities.CreateBadRequestResponse(Request, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [ActionName("get")]
+        public HttpResponseMessage GetUserProfile(string userName) {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(Constants.ConnectionStr))
+                {
+                    connection.Open();
+
+
+                    string query = "SELECT UserName, Email, PhotoUrl, PhoneNumber, FacebookUrl, TwitterUrl FROM dbo.users WHERE [UserName] = @userName";
+                    using (SqlCommand cmd = new SqlCommand(query, connection))
+                    {
+                        cmd.Parameters.Add("@userName", SqlDbType.VarChar, 255).Value = userName;
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                var profile = new UserProfile()
+                                {
+                                    userName = reader.IsDBNull(0) ? null : reader.GetString(0),
+                                    email = reader.IsDBNull(1) ? null : reader.GetString(1),
+                                    photoUrl = reader.IsDBNull(2) ? null : reader.GetString(2),
+                                    phoneNumber = reader.IsDBNull(3) ? null : reader.GetString(3),
+                                    facebookUrl = reader.IsDBNull(4) ? null : reader.GetString(4),
+                                    twitterUrl = reader.IsDBNull(5) ? null : reader.GetString(5),
+                                };
+                                return Utilities.CreateJsonReponse(Request, profile);
+                            }
+                            else
+                            {
+                                return Utilities.CreateBadRequestResponse(Request, $"User {userName} not found!");
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return Utilities.CreateBadRequestResponse(Request, e.Message);
+            }
+        }
     }
 }

@@ -18,5 +18,21 @@ namespace RestApi
 
             return response;
         }
+
+        public static HttpResponseMessage CreateOKResponse(HttpRequestMessage request, string errMsg = "")
+        {
+            HttpResponseMessage response = request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(errMsg);
+
+            return response;
+        }
+
+        public static HttpResponseMessage CreateBadRequestResponse(HttpRequestMessage request, string errMsg)
+        {
+            HttpResponseMessage response = request.CreateResponse(HttpStatusCode.BadRequest);
+            response.Content = new StringContent(errMsg);
+
+            return response;
+        }
     }
 }
