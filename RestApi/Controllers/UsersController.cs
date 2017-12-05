@@ -169,21 +169,43 @@ namespace RestApi.Controllers
                 {
                     connection.Open();
 
+                    // TODO: need to authenticate user
+
                     // If everything is null, report error
                     if (password == null && email == null && photoUrl == null && phoneNumber == null && facebookUrl == null && twitterUrl == null)
                     {
                         return Utilities.CreateBadRequestResponse(Request, $"Nothing to update");
                     }
 
-                    // TODO: need to authenticate user
+                    List<string> parameters = new List<string>();
+                    if (password != null)
+                    {
+                        parameters.Add("Password=(@password)");
+                    }
+                    if (email != null)
+                    {
+                        parameters.Add("Email=(@email)");
+                    }
+                    if (photoUrl != null)
+                    {
+                        parameters.Add("PhotoUrl=(@photoUrl)");
+                    }
+                    if (phoneNumber != null)
+                    {
+                        parameters.Add("PhoneNumber=(@phoneNumber)");
+                    }
+                    if (facebookUrl != null)
+                    {
+                        parameters.Add("FacebookUrl=(@facebookUrl)");
+                    }
+                    if (twitterUrl != null)
+                    {
+                        parameters.Add("TwitterUrl=(@twitterUrl)");
+                    }
+                    string parameterStr = string.Join(", ", parameters);
+
                     string query = "UPDATE dbo.users " +
-                        "SET " +
-                        (password != null ? "Password=(@password), " : "") +
-                        (email != null ? "Email=(@email), " : "") +
-                        (photoUrl != null ? "PhotoUrl=(@photoUrl), " : "") +
-                        (phoneNumber != null ? "PhoneNumber=(@phoneNumber), " : "") +
-                        (facebookUrl != null ? "FacebookUrl=(@facebookUrl), " : "") +
-                        (twitterUrl != null ? "TwitterUrl=(@twitterUrl) " : "") +
+                        "SET " + parameterStr + " " +
                         "WHERE UserName = (@userName)";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
                     {
