@@ -178,11 +178,11 @@ namespace RestApi.Controllers
                     // TODO: need to authenticate user
                     string query = "UPDATE dbo.users " +
                         "SET " +
-                        (password != null ? "Password=(@password) " : "") +
-                        (email != null ? "Email=(@email) " : "") +
-                        (photoUrl != null ? "PhotoUrl=(@photoUrl) " : "") +
-                        (phoneNumber != null ? "PhoneNumber=(@phoneNumber) " : "") +
-                        (facebookUrl != null ? "FacebookUrl=(@facebookUrl) " : "") +
+                        (password != null ? "Password=(@password), " : "") +
+                        (email != null ? "Email=(@email), " : "") +
+                        (photoUrl != null ? "PhotoUrl=(@photoUrl), " : "") +
+                        (phoneNumber != null ? "PhoneNumber=(@phoneNumber), " : "") +
+                        (facebookUrl != null ? "FacebookUrl=(@facebookUrl), " : "") +
                         (twitterUrl != null ? "TwitterUrl=(@twitterUrl) " : "") +
                         "WHERE UserName = (@userName)";
                     using (SqlCommand cmd = new SqlCommand(query, connection))
@@ -219,7 +219,7 @@ namespace RestApi.Controllers
                         }
                         else
                         {
-                            return Utilities.CreateOKResponse(Request);
+                            return Utilities.CreateJsonReponse(Request, new { });
                         }
                     }
                 }
