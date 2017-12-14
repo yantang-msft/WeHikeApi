@@ -170,6 +170,7 @@ namespace RestApi.Controllers
                     connection.Open();
 
                     // TODO: need to authenticate user
+                    // TODO: use jwt for authentication! https://jwt.io/introduction/
 
                     // If everything is null, report error
                     if (password == null && email == null && photoUrl == null && phoneNumber == null && facebookUrl == null && twitterUrl == null)
